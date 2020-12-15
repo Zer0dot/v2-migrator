@@ -1,6 +1,9 @@
 // SPDX-License-Identifier: agpl-3.0
 pragma solidity 0.6.12;
 
+/**
+ * @dev Simple Aave lendingPool V1 interface.
+ */
 interface ILendingPoolV1 {
     function getUserReserveData(address _reserve, address _user) external view returns (
         uint256, 

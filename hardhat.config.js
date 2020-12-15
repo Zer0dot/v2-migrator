@@ -6,8 +6,15 @@ const { ffmnemonic, alchemyProjectId, etherscanKey, infuraProjectId } = require(
  * @type import('hardhat/config').HardhatUserConfig
  */
 module.exports = {
-  solidity: "0.6.12",
-
+  solidity: {
+    version: "0.6.12",
+    settings: {
+      optimizer: {
+        enabled: true,
+        runs: 200
+      }
+    }
+  },
   networks: {
     // mainnet: {
     //   url: `https://eth-mainnet.alchemyapi.io/v2/${alchemyProjectId}`,
@@ -18,7 +25,7 @@ module.exports = {
     hardhat: {
       forking: {
         url: `https://eth-mainnet.alchemyapi.io/v2/${alchemyProjectId}`,
-        blockNumber: 11432885
+        blockNumber: 11449150
       }
     },
     kovan: {

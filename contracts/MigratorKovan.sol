@@ -18,26 +18,25 @@ import { FlashLoanReceiverBase } from './FlashLoanReceiverBase.sol';
  * @author Zer0dot
  * 
  * @dev This contract migrates your given aTokens and debt positions to V2, using the
- * given rateMode. USE AT YOUR OWN RISK.
+ * given rateMode.
  */
-contract Migrator is FlashLoanReceiverBase, Pausable {
+contract MigratorKovan is FlashLoanReceiverBase, Pausable {
     using SafeERC20 for IERC20;
     using SafeERC20 for IAToken;
     using SafeMath for uint256;
 
     address public pauser;
-    address constant WETH_ADDRESS = address(0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2);
+    address constant WETH_ADDRESS = address(0xd0A1E359811322d97991E03f863a0C30C2cF029C);
     address constant MOCK_ETH_ADDRESS = address(0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE);
-    address constant PROVIDER_V2_ADDRESS = address(0xB53C1a33016B2DC2fF3653530bfF1848a515c8c5);
-    address constant PROVIDER_V1_ADDRESS = address(0x24a42fD28C976A61Df5D00D0599C34c4f90748c8);
-    address constant A_ETH_ADDRESS = address(0x3a3A65aAb0dd2A17E3F1947bA16138cd37d08c04);
-    address constant A_LEND_ADDRESS = address(0x7D2D3688Df45Ce7C552E19c27e007673da9204B8);
-    address constant AAVE_ADDRESS = address(0x7Fc66500c84A76Ad7e9c93437bFc5Ac33E2DDaE9);
-    address constant LEND_MIGRATOR_ADDRESS = address(0x317625234562B1526Ea2FaC4030Ea499C5291de4);
-    uint16 constant REF_CODE = 152;         
-    address payable caller;         // The user currently migrating. Must never be address(0).
-    
-    // "lendingPoolV1" is initialized here, whereas "LENDING_POOL", the V2 lendingPool, is initialized in the constructor.
+    address constant PROVIDER_V2_ADDRESS = address(0x652B2937Efd0B5beA1c8d54293FC1289672AFC6b);
+    address constant PROVIDER_V1_ADDRESS = address(0x506B0B2CF20FAA8f38a4E2B524EE43e1f4458Cc5);
+    address constant A_ETH_ADDRESS = address(0xD483B49F2d55D2c53D32bE6efF735cB001880F79);
+    address constant A_LEND_ADDRESS = address(0xcBa131C7FB05fe3c9720375cD86C99773faAbF23);
+    address constant AAVE_ADDRESS = address(0xB597cd8D3217ea6477232F9217fa70837ff667Af);
+    address constant LEND_MIGRATOR_ADDRESS = address(0x8cC8965FEf45a448bdbe3C749683b280eF2E17Ea);
+    uint16 constant REF_CODE = 152;
+    address payable private caller;         // The user currently migrating. Must never be address(0).
+
     ILendingPoolAddressesProvider private providerV2 = ILendingPoolAddressesProvider(PROVIDER_V2_ADDRESS);
     ILendingPoolAddressesProviderV1 private providerV1 = ILendingPoolAddressesProviderV1(PROVIDER_V1_ADDRESS);
     
