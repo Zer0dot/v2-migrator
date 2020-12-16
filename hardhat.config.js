@@ -16,12 +16,12 @@ module.exports = {
     }
   },
   networks: {
-    // mainnet: {
-    //   url: `https://eth-mainnet.alchemyapi.io/v2/${alchemyProjectId}`,
-    //   gasPrice: 35000000000,
-    //   gas: 2700000,
-    //   accounts: { mnemonic: ffmnemonic }
-    // },
+    mainnet: {
+      url: `https://eth-mainnet.alchemyapi.io/v2/${alchemyProjectId}`,
+      gasPrice: 45000000000,
+      gas: 3200000,
+      accounts: { mnemonic: ffmnemonic }
+    },
     hardhat: {
       forking: {
         url: `https://eth-mainnet.alchemyapi.io/v2/${alchemyProjectId}`,

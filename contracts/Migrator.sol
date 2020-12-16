@@ -34,8 +34,8 @@ contract Migrator is FlashLoanReceiverBase, Pausable {
     address constant A_LEND_ADDRESS = address(0x7D2D3688Df45Ce7C552E19c27e007673da9204B8);
     address constant AAVE_ADDRESS = address(0x7Fc66500c84A76Ad7e9c93437bFc5Ac33E2DDaE9);
     address constant LEND_MIGRATOR_ADDRESS = address(0x317625234562B1526Ea2FaC4030Ea499C5291de4);
-    uint16 constant REF_CODE = 152;         
-    address payable caller;         // The user currently migrating. Must never be address(0).
+    uint16 constant REF_CODE = 152;     // The referral code to use.         
+    address payable caller;             // The user currently migrating. Must never be address(0).
     
     // "lendingPoolV1" is initialized here, whereas "LENDING_POOL", the V2 lendingPool, is initialized in the constructor.
     ILendingPoolAddressesProvider private providerV2 = ILendingPoolAddressesProvider(PROVIDER_V2_ADDRESS);
@@ -48,13 +48,17 @@ contract Migrator is FlashLoanReceiverBase, Pausable {
     ILendToAaveMigrator lendMigrator = ILendToAaveMigrator(LEND_MIGRATOR_ADDRESS);
     IWETH weth = IWETH(WETH_ADDRESS);
 
+    /**
+     * @dev A simple modifier that prevents functions from executing when the contract
+     * is paused due to a flaw or vulnerability. 
+     */
     modifier onlyPauser() {
         require(msg.sender == pauser, "Migrator: Must be pauser");
         _;
     }
 
     /**
-     * @dev The constructor initializes "LENDING_POOL", the V2 lendingPool.
+     * @dev The constructor initializes "LENDING_POOL", the V2 lendingPool, and the pauser.
      */ 
     constructor() FlashLoanReceiverBase(providerV2) public {
         pauser = msg.sender;
@@ -66,7 +70,7 @@ contract Migrator is FlashLoanReceiverBase, Pausable {
      * It is recommended to approve a slightly larger amount than the current balance for dust.
      * 
      * @param aTokens The array of approved aTokens. 
-     * @param borrowReserves The reserves borrowed on Aave V1.
+     * @param borrowReserves The reserves borrowed on Aave V1. Use the WETH address for ETH borrows.
      * @param rateModes The interest rate modes to borrow with on Aave V2.
      */
     function migrate(
@@ -79,7 +83,8 @@ contract Migrator is FlashLoanReceiverBase, Pausable {
     {
         require(aTokens.length > 0, "Migrator: Empty aToken array");
         // Initializes "caller" here, and sets it back to address(0) upon completion.
-        // This is important because it prevents other functions from being called before this one.
+        // This is important because it prevents "executeOperation()" from being called before
+        // this function.
         caller = msg.sender;
         uint256[] memory borrowAmounts = new uint256[](borrowReserves.length);
         uint256[] memory aTokenAmounts = new uint256[](aTokens.length);
@@ -214,11 +219,20 @@ contract Migrator is FlashLoanReceiverBase, Pausable {
     }
 
     /**
+     * @notice THIS CONTRACT SHOULD NEVER HOLD FUNDS.
+     * @dev This function only exists in case ERC20 funds are accidentally sent to the
+     * contract address, and can only be called by the pauser.
+     */
+    function withdrawLockedTokens(address token) external onlyPauser {
+        uint256 balance = IERC20(token).balanceOf(address(this));
+        IERC20(token).safeTransfer(pauser, balance);
+    }
+    /**
      * @dev The receive function is a necessity because Aave V1 deals with ETH, whereas Aave
      * V2 deals with WETH. 
      * 
      * This function can only be called by either the WETH address upon withdrawing ETH to repay
-     * an old borrow, or from the lendingPoolCore address when redeeming aETH for ETH to deposit 
+     * an Aave V1 borrow, or from the lendingPoolCore address when redeeming aETH for ETH to deposit 
      * into awETH on Aave V2.
      */
     receive() external payable whenNotPaused {
@@ -226,8 +240,8 @@ contract Migrator is FlashLoanReceiverBase, Pausable {
     }
 
     /**
-     * @dev This function takes care of migrating aTokens from v1 to v2, and is private.
-     * It takes into account aLEND to aAAVE migration.
+     * @dev This function takes care of migrating aTokens from v1 to v2, and is private. It also
+     * takes into account aLEND to aAAVE migration.
      *
      * @param aTokens The aTokens array passed to migrate.
      * @param aTokenAmounts aTokenAmounts determined in migrate.
@@ -246,13 +260,11 @@ contract Migrator is FlashLoanReceiverBase, Pausable {
             aToken.redeem(aTokenAmounts[i]);
 
             // If the aToken is aETH, we will receive ETH upon calling redeem.
-            // This must be turned to WETH, so we set toDeposit to true, and manually
+            // This must be turned to WETH, so we deposit it into WETH and manually
             // set the underlying address to the WETH address
             if (aTokens[i] == A_ETH_ADDRESS) {
-                uint256 balance = IERC20(WETH_ADDRESS).balanceOf(address(this));
                 weth.deposit{value:aTokenAmounts[i]}();
-                underlying = WETH_ADDRESS;
-                balance = IERC20(WETH_ADDRESS).balanceOf(address(this));               
+                underlying = WETH_ADDRESS;            
             } 
 
             // If the aToken to migrate is aLEND, migrate it to AAVE before depositing AAVE. 
@@ -260,7 +272,7 @@ contract Migrator is FlashLoanReceiverBase, Pausable {
                 IERC20(underlying).approve(LEND_MIGRATOR_ADDRESS, aTokenAmounts[i]);
                 lendMigrator.migrateFromLEND(aTokenAmounts[i]);
                 underlying = AAVE_ADDRESS;
-                uint256 aaveBalanceAfter = IERC20(underlying).balanceOf(address(this));
+                uint256 aaveBalanceAfter = aTokenAmounts[i].div(100);
                 IERC20(underlying).approve(address(LENDING_POOL), aaveBalanceAfter);
                 LENDING_POOL.deposit(underlying, aaveBalanceAfter, caller, REF_CODE);
             } else {
