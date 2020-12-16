@@ -2,7 +2,9 @@
 
 Deployed on mainnet at: 0x393E3512d45a956A628124665672312ea86930Ba [(View on Etherscan)](https://etherscan.io/address/0x393e3512d45a956a628124665672312ea86930ba)
 
-Demo TX hash (ETH collateral & DAI borrow): 0x1dd6be694c494204ac2fca46a596f86c09db835bbcb8fc8eca3127a6dfb5e5d8 [(View on Etherscan)](https://etherscan.io/address/0x393e3512d45a956a628124665672312ea86930ba)
+Deployed on Kovan at: 0xecc2a29ba60fa9e9a72ea92479cbaa2ea45ab7ce [(View on Etherscan)](https://kovan.etherscan.io/address/0xecc2a29ba60fa9e9a72ea92479cbaa2ea45ab7ce)
+
+Demo mainnet TX hash (ETH collateral & DAI borrow): 0x1dd6be694c494204ac2fca46a596f86c09db835bbcb8fc8eca3127a6dfb5e5d8 [(View on Etherscan)](https://etherscan.io/address/0x393e3512d45a956a628124665672312ea86930ba)
 
 This is a project aimed at aspiring developers looking to learn to build atop great protocols like Aave. If you choose to use it, make sure
 to follow the instructions below!
