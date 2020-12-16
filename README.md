@@ -72,7 +72,7 @@ That about wraps it up for examples, if you have any questions don't hesitate to
 
 Keep in mind that the more assets you have deposited/borrowed, the higher the gas limit will have to be.
 
-Also, DO NOT send funds directly to the contract! The contract should *never* hold any funds whatsoever. If, by chance, you do end up sending funds to it, let me know and I'll pull them out for you.
+Also, DO NOT send funds directly to the contract! The contract should *never* hold any funds whatsoever. If, by chance, you do end up sending tokens to it, let me know and I'll pull them out for you.
 
 Lastly, and I cannot stress this enough, I am *not an expert.* Use the contract at your own risk. If you don't understand the code, I recommend waiting for the official migrator.
 
