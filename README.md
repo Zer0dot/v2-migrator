@@ -13,8 +13,8 @@ make it as hard as possible to lose funds, I can't guarantee anything. This is t
 
 There are essentially 3 steps you need to take to migrate:
 
-1. **Approve** the migrator with your aToken(s).(I recommend an amount only slightly above your aToken balance, just to be safe.)
-2. **Delegate** your chosen debtToken(s) credit to the migrator. (I recommend an amount only slightly above your borrows, just to be safe.)
+1. **Approve** the migrator with your aToken(s). (I recommend an amount only slightly above your aToken balance, just to be safe.)
+2. **Delegate** your chosen debtToken(s) credit to the migrator. (I recommend an amount only slightly above your borrows, again just to be safe.)
 3. **Migrate!**
 
 (Recommended) 4. <b>Reset</b> your allowances to 0 (just good practice, I use [tac.dappstar.io](https://tac.dappstar.io/#/))
