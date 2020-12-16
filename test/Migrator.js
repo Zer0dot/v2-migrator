@@ -145,7 +145,6 @@ describe("-----------Migrator contract (clean room per test)-----------", functi
 });
 
 describe("-----------Migrator contract (persistent) with ETH collateral and no borrows-----------", function () {
-
    let signer;
    let Migrator;
    let migrator;
@@ -257,7 +256,6 @@ describe("-----------Migrator contract (persistent) with ETH collateral borrowin
    let lendingPoolV2;
    let aEthBalanceBefore;
    let aEth;
-   let WETH;
    let aWETH;
    let debtDai;
    let dai;
@@ -275,7 +273,6 @@ describe("-----------Migrator contract (persistent) with ETH collateral borrowin
    
       aEth = await new ethers.Contract(AETH_ADDRESS, tokenAbi, signer);
       debtDai = await new ethers.Contract(STABLE_DEBT_DAI_ADDRESS, debtTokenAbi, signer);
-      WETH = await new ethers.Contract(WETH_ADDRESS, wEthAbi, signer);
       aWETH = await new ethers.Contract(AWETH_ADDRESS, tokenAbi, signer);
       dai = await new ethers.Contract(DAI_ADDRESS, tokenAbi, signer);
       lendingPoolV1 = await new ethers.Contract(LENDING_POOL_V1_ADDRESS, lendingPoolV1Abi, signer);
@@ -384,13 +381,6 @@ describe("-----------Migrator contract (persistent) with ETH collateral borrowin
    });
 });
 
-
-// test:
-// 1. deposit 10 weth
-// 2. deposit 10 V2 aWETH
-// 3. borrow 100 V2 DAI 
-// 4. deposit 100 V1 aDAI (just borrowed)
-// 5. test migration, should fail
 describe("-----------Migrator contract (persistent) migrating V2 loan deposited in V1", function () {
    let signer;
    let Migrator;
@@ -510,11 +500,6 @@ describe("-----------Migrator contract (persistent) migrating V2 loan deposited 
    });
 });
 
-// test:
-// 1. deposit 10 V1 aETH
-// 2. borrow 100 V1 DAI
-// 3. deposit 100 V2 aDAI
-// 4. Migrate
 describe("-----------Migrator contract (persistent) migrating V1 loan deposited in V2", function () {
    let signer;
    let Migrator;
@@ -522,7 +507,6 @@ describe("-----------Migrator contract (persistent) migrating V1 loan deposited 
    let lendingPoolV1;
    let lendingPoolV2;
    let dai;
-   let aETH;
    let aDaiV2;
    let debtDai;
 
@@ -532,7 +516,6 @@ describe("-----------Migrator contract (persistent) migrating V1 loan deposited 
       Migrator = await ethers.getContractFactory("Migrator");
       migrator = await Migrator.deploy();
 
-      aEth = await new ethers.Contract(AETH_ADDRESS, tokenAbi, signer);
       aDaiV2 = await new ethers.Contract(ADAI_V2_ADDRESS, tokenAbi, signer);
       debtDai = await new ethers.Contract(STABLE_DEBT_DAI_ADDRESS, debtTokenAbi, signer);
       dai = await new ethers.Contract(DAI_ADDRESS, tokenAbi, signer);
