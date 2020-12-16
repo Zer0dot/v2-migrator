@@ -9,7 +9,7 @@ to follow the instructions below!
 
 ## Instructions
 If you *choose* to use my migrator, please make sure you stick to the following steps. Remember, the code is unaudited and, despite my best efforts to
-make it as hard as possible to lose funds, I can't guarantee anything. This is DeFi, you need to know what you're doing!
+make it as hard as possible to lose funds, I can't guarantee anything. This is the wild west of DeFi, you need to know what you're doing!
 
 There are essentially 3 steps you need to take to migrate:
 
